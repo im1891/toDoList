@@ -1,17 +1,58 @@
-import React from "react";
+import React, {useState} from "react";
+import {FilterValueType} from "./App";
 
-export type TaskType = {
-    id: number,
-    title: string,
-    isDone: boolean,
+export type TasksType = {
+    id: number
+    title: string
+    isDone: boolean
 }
 
+/*type PropsType = {
+    title: string
+    tasks: TasksType[]
+    removeTask: (taskId: number) => void
+    changeFilter: (filterValue: FilterValueType) => void
+
+}*/
+
 type PropsType = {
-    title: string,
-    tasks: Array<TaskType>
+    title: string
+    tasks: TasksType[]
+    removeTask: (taskId: number) => void
+
+
 }
 
 export function ToDoList(props: PropsType) {
+
+
+    let [filter, setFilter] = useState<FilterValueType>('all')
+
+    let filteredTasks = props.tasks;
+
+    if (filter === 'active') {
+        filteredTasks = props.tasks.filter(ts => !ts.isDone)
+    }
+    if (filter === 'completed') {
+        filteredTasks = props.tasks.filter(ts => ts.isDone)
+    }
+
+    let changeFilter = (filterValue: FilterValueType) => {
+        setFilter(filterValue)
+
+    }
+
+
+    /*   let mappedTasks = props.tasks.map(ts => <li key={ts.id}>
+           <span>{ts.title}</span> <input type="checkbox" checked={ts.isDone}/>
+           <button onClick={() => props.removeTask(ts.id)}>x</button>
+       </li>)*/
+
+    let mappedTasks = filteredTasks.map(ts => <li key={ts.id}>
+        <span>{ts.title}</span> <input type="checkbox" checked={ts.isDone}/>
+        <button onClick={() => props.removeTask(ts.id)}>x</button>
+    </li>)
+
     return (
 
         <div>
@@ -20,19 +61,21 @@ export function ToDoList(props: PropsType) {
                 <input/>
                 <button>+</button>
             </div>
-            <ul>
-                <li><input type="checkbox" checked={props.tasks[0].isDone}/> <span>{props.tasks[0].title}</span></li>
-                <li><input type="checkbox" checked={props.tasks[1].isDone}/> <span>{props.tasks[1].title}</span></li>
-                <li><input type="checkbox" checked={props.tasks[2].isDone}/> <span>{props.tasks[2].title}</span></li>
 
+            <ul>
+                {mappedTasks}
             </ul>
             <div>
-                <button>All</button>
-                <button>Active</button>
-                <button>Completed</button>
+                <button onClick={() => changeFilter('all')}>All</button>
+                <button onClick={() => changeFilter('active')}>Active</button>
+                <button onClick={() => changeFilter('completed')}>Completed</button>
             </div>
         </div>
 
     )
 
 }
+
+
+
+
