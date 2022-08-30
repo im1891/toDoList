@@ -41,7 +41,7 @@ export function ToDoList(props: PropsType) {
     }
 
     const onKeyPressHandler = (event: React.KeyboardEvent<HTMLInputElement>) => {
-        return event.key === 'Enter' ? addTaskHandler() : '';
+         event.key === 'Enter' && addTaskHandler()
     }
 
     const onChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
