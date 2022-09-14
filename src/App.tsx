@@ -4,10 +4,20 @@ import {v1} from 'uuid';
 import {ToDoList} from "./ToDoList";
 
 export type FilterValuesType = "all" | "active" | "completed";
+
+export type TaskType = {
+    id: string
+    title: string
+    isDone: boolean
+}
 export type TodolistsType = {
     id: string
     title: string
     filter: FilterValuesType
+}
+
+type TasksStateType = {
+    [key: string]: TaskType[]
 }
 
 function App() {
@@ -20,7 +30,7 @@ function App() {
         {id: todolistID2, title: 'What to buy', filter: 'all'},
     ])
 
-    let [tasks, setTasks] = useState({
+    let [tasks, setTasks] = useState<TasksStateType>({
         [todolistID1]: [
             {id: v1(), title: "HTML&CSS", isDone: true},
             {id: v1(), title: "JS", isDone: true},
