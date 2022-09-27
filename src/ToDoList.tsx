@@ -1,7 +1,7 @@
 import React, { ChangeEvent } from "react";
 import { FilterValuesType, TaskType } from "./App";
 import { EditableSpan } from "./сomponents/EditableSpan";
-import { SuperInput } from "./сomponents/Input";
+import { SuperInput } from "./сomponents/SuperInput";
 
 type PropsType = {
   todoListId: string;
