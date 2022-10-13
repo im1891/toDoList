@@ -1,0 +1,17 @@
+.errorMessage {
+    color: red;
+}
+
+.error {
+    border-color: red;
+    outline: none;
+}
+
+.activeButton {
+    background-color: darkseagreen;
+    color: white;
+}
+
+.completed {
+    opacity: .5;
+}
