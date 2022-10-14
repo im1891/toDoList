@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import './App.css';
 import {v1} from "uuid";
 import {AddItemForm} from "./components/AddItemForm";
@@ -7,6 +7,7 @@ import {AppBar, Button, Container, Grid, IconButton, Paper, Toolbar, Typography}
 import {Menu} from "@material-ui/icons";
 
 export type FilterValuesType = 'all' | 'active' | 'completed'
+
 export type TodoListType = {
     id: string
     title: string
@@ -48,10 +49,7 @@ function App() {
             {id: v1(), title: "Meat", isDone: false}
         ]
     });
-    useEffect(() => {
-        console.log(tasks)
-        console.log(todoLists)
-    }, [tasks, todoLists])
+
     const addTodoList = (newTodoListTitle: string) => {
         let todoListId = v1()
         let newTodoList: TodoListType = {id: todoListId, title: newTodoListTitle, filter: "all"}
