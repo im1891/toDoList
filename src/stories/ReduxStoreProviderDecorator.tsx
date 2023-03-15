@@ -8,21 +8,78 @@ import {
 } from "redux";
 import { todolistsReducer } from "../state/todolists-reducer";
 import { tasksReducer } from "../state/tasks-reducer";
+import { TaskPriorities, TaskStatuses } from "../api/todolists-api";
 
-const initialGlobalState = {
+const initialGlobalState: AppRootStateType = {
   todolists: [
-    { id: "todolistId1", title: "What to learn", filter: "all" },
-    { id: "todolistId2", title: "What to buy", filter: "all" },
+    {
+      id: "todolistId1",
+      title: "What to learn",
+      filter: "all",
+      addedDate: "",
+      order: 0,
+    },
+    {
+      id: "todolistId2",
+      title: "What to buy",
+      filter: "all",
+      addedDate: "",
+      order: 0,
+    },
   ],
 
   tasks: {
     ["todolistId1"]: [
-      { id: v1(), title: "HTML&CSS", isDone: true },
-      { id: v1(), title: "JS", isDone: false },
+      {
+        id: v1(),
+        title: "HTML&CSS",
+        status: TaskStatuses.Completed,
+        description: "",
+        order: 0,
+        deadline: "",
+        priority: TaskPriorities.Low,
+        addedDate: "",
+        startDate: "",
+        todoListId: "todolistId1",
+      },
+      {
+        id: v1(),
+        title: "JS",
+        status: TaskStatuses.New,
+        description: "",
+        order: 0,
+        deadline: "",
+        priority: TaskPriorities.Low,
+        addedDate: "",
+        startDate: "",
+        todoListId: "todolistId1",
+      },
     ],
     ["todolistId2"]: [
-      { id: v1(), title: "Milk", isDone: true },
-      { id: v1(), title: "React Book", isDone: false },
+      {
+        id: v1(),
+        title: "Milk",
+        status: TaskStatuses.Completed,
+        description: "",
+        order: 0,
+        deadline: "",
+        priority: TaskPriorities.Low,
+        addedDate: "",
+        startDate: "",
+        todoListId: "todolistId2",
+      },
+      {
+        id: v1(),
+        title: "React Book",
+        status: TaskStatuses.New,
+        description: "",
+        order: 0,
+        deadline: "",
+        priority: TaskPriorities.Low,
+        addedDate: "",
+        startDate: "",
+        todoListId: "todolistId2",
+      },
     ],
   },
 };
@@ -37,7 +94,7 @@ const rootReducer = combineReducers({
 
 const storyBookStore: StoryBookStoreType = createStore(
   rootReducer,
-  initialGlobalState as AppRootStateType
+  initialGlobalState
 );
 
 export const ReduxStoreProviderDecorator = (Story: () => JSX.Element) => {

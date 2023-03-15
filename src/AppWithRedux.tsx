@@ -1,12 +1,14 @@
 import React, { useCallback } from "react";
 import "./App.css";
-import { TaskType, Todolist } from "./Todolist";
+import { Todolist } from "./Todolist";
 import { AddItemForm } from "./AddItemForm";
 import {
   addTodolistAC,
   changeTodolistFilterAC,
   changeTodolistTitleAC,
+  FilterValuesType,
   removeTodolistAC,
+  TodolistDomainType,
 } from "./state/todolists-reducer";
 import {
   addTaskAC,
@@ -27,20 +29,11 @@ import {
   Typography,
 } from "@mui/material";
 import { Menu } from "@mui/icons-material";
-
-export type FilterValuesType = "all" | "active" | "completed";
-export type TodolistType = {
-  id: string;
-  title: string;
-  filter: FilterValuesType;
-};
-
-export type TasksStateType = {
-  [key: string]: Array<TaskType>;
-};
+import { TasksStateType } from "./App";
+import { TaskStatuses } from "./api/todolists-api";
 
 export const AppWithRedux = () => {
-  const todolists = useSelector<AppRootStateType, Array<TodolistType>>(
+  const todolists = useSelector<AppRootStateType, Array<TodolistDomainType>>(
     (state) => state.todolists
   );
 
@@ -65,8 +58,8 @@ export const AppWithRedux = () => {
   );
 
   const changeStatus = useCallback(
-    (taskId: string, isDone: boolean, todolistId: string) => {
-      dispatch(changeTaskStatusAC(taskId, isDone, todolistId));
+    (taskId: string, status: TaskStatuses, todolistId: string) => {
+      dispatch(changeTaskStatusAC(taskId, status, todolistId));
     },
     [dispatch]
   );

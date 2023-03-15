@@ -1,5 +1,4 @@
 import React, { memo, useCallback } from "react";
-import { FilterValuesType } from "./App";
 import { AddItemForm } from "./AddItemForm";
 import { EditableSpan } from "./EditableSpan";
 import { Button, IconButton } from "@mui/material";
@@ -13,12 +12,8 @@ import {
 } from "./state/tasks-reducer";
 import { useDispatch, useSelector } from "react-redux";
 import { AppRootStateType } from "./state/store";
-
-export type TaskType = {
-  id: string;
-  title: string;
-  isDone: boolean;
-};
+import { TaskStatuses, TaskType } from "./api/todolists-api";
+import { FilterValuesType } from "./state/todolists-reducer";
 
 type TodolistPropsType = {
   id: string;
@@ -66,10 +61,14 @@ export const Todolist2 = memo((props: TodolistPropsType) => {
   let tasksForTodolist = tasks;
 
   if (props.filter === "active") {
-    tasksForTodolist = tasksForTodolist.filter((t) => !t.isDone);
+    tasksForTodolist = tasksForTodolist.filter(
+      (t) => t.status === TaskStatuses.New
+    );
   }
   if (props.filter === "completed") {
-    tasksForTodolist = tasksForTodolist.filter((t) => t.isDone);
+    tasksForTodolist = tasksForTodolist.filter(
+      (t) => t.status === TaskStatuses.Completed
+    );
   }
 
   const removeTask = useCallback(
@@ -80,8 +79,8 @@ export const Todolist2 = memo((props: TodolistPropsType) => {
   );
 
   const changeTaskStatus = useCallback(
-    (taskId: string, isDone: boolean) => {
-      dispatch(changeTaskStatusAC(taskId, isDone, props.id));
+    (taskId: string, status: TaskStatuses) => {
+      dispatch(changeTaskStatusAC(taskId, status, props.id));
     },
     [props.id]
   );

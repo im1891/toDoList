@@ -1,16 +1,11 @@
 import React, { memo, useCallback } from "react";
-import { FilterValuesType } from "./App";
 import { AddItemForm } from "./AddItemForm";
 import { EditableSpan } from "./EditableSpan";
 import { Button, IconButton } from "@mui/material";
 import { Delete } from "@mui/icons-material";
 import { Task } from "./Task";
-
-export type TaskType = {
-  id: string;
-  title: string;
-  isDone: boolean;
-};
+import { TaskStatuses, TaskType } from "./api/todolists-api";
+import { FilterValuesType } from "./state/todolists-reducer";
 
 type TodolistPropsType = {
   id: string;
@@ -19,7 +14,11 @@ type TodolistPropsType = {
   removeTask: (taskId: string, todolistId: string) => void;
   changeFilter: (value: FilterValuesType, todolistId: string) => void;
   addTask: (title: string, todolistId: string) => void;
-  changeTaskStatus: (id: string, isDone: boolean, todolistId: string) => void;
+  changeTaskStatus: (
+    id: string,
+    status: TaskStatuses,
+    todolistId: string
+  ) => void;
   removeTodolist: (id: string) => void;
   changeTodolistTitle: (id: string, newTitle: string) => void;
   filter: FilterValuesType;
@@ -61,10 +60,14 @@ export const Todolist = memo((props: TodolistPropsType) => {
   let tasksForTodolist = props.tasks;
 
   if (props.filter === "active") {
-    tasksForTodolist = tasksForTodolist.filter((t) => !t.isDone);
+    tasksForTodolist = tasksForTodolist.filter(
+      (t) => t.status === TaskStatuses.New
+    );
   }
   if (props.filter === "completed") {
-    tasksForTodolist = tasksForTodolist.filter((t) => t.isDone);
+    tasksForTodolist = tasksForTodolist.filter(
+      (t) => t.status === TaskStatuses.Completed
+    );
   }
 
   const removeTask = useCallback(
@@ -75,8 +78,8 @@ export const Todolist = memo((props: TodolistPropsType) => {
   );
 
   const changeTaskStatus = useCallback(
-    (taskId: string, isDone: boolean) => {
-      props.changeTaskStatus(taskId, isDone, props.id);
+    (taskId: string, status: TaskStatuses) => {
+      props.changeTaskStatus(taskId, status, props.id);
     },
     [props.changeTaskStatus, props.id]
   );
