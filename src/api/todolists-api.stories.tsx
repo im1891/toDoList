@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { todolistsAPI, UpdateTaskType } from "./todolists-api";
+import { todolistsAPI, UpdateTaskModelType } from "./todolists-api";
 
 export default {
   title: "API",
@@ -214,7 +214,7 @@ export const UpdateTask = () => {
     description: string,
     status: number
   ) => {
-    const updatedTask: UpdateTaskType = {
+    const updatedTask: UpdateTaskModelType = {
       title: title,
       deadline: deadline,
       description: description,

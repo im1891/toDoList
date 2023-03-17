@@ -47,7 +47,7 @@ type GetTasksResponseType = {
   error: string | null;
 };
 
-export type UpdateTaskType = {
+export type UpdateTaskModelType = {
   title: string;
   description: string;
   status: number;
@@ -78,7 +78,9 @@ export const todolistsAPI = {
   },
 
   deleteTodolist(todolistId: string) {
-    return axiosInstance.delete<ResponseType>(`/todo-lists/${todolistId}`);
+    return axiosInstance
+      .delete<ResponseType>(`/todo-lists/${todolistId}`)
+      .then((res) => res.data);
   },
 
   updateTodolistTitle(todolistId: string, newTitle: string) {
@@ -100,7 +102,7 @@ export const todolistsAPI = {
   },
 
   createTask(todolistId: string, title: string) {
-    return axiosInstance.post<GetTasksResponseType>(
+    return axiosInstance.post<ResponseType<{ item: TaskType }>>(
       `/todo-lists/${todolistId}/tasks`,
       {
         title,
@@ -108,10 +110,10 @@ export const todolistsAPI = {
     );
   },
 
-  updateTask(todolistId: string, taskId: string, updateTask: UpdateTaskType) {
-    return axiosInstance.put<GetTasksResponseType>(
+  updateTask(todolistId: string, taskId: string, model: UpdateTaskModelType) {
+    return axiosInstance.put<ResponseType<{ item: TaskType }>>(
       `todo-lists/${todolistId}/tasks/${taskId}`,
-      updateTask
+      model
     );
   },
 };

@@ -1,16 +1,12 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect } from "react";
 import "./App.css";
 import { AddItemForm } from "./AddItemForm";
 import {
-  addTodolistAC,
-  changeTodolistFilterAC,
-  changeTodolistTitleAC,
   FilterValuesType,
-  removeTodolistAC,
   TodolistDomainType,
+  todolistsAC,
+  todolistsTC,
 } from "./state/todolists-reducer";
-import { useDispatch, useSelector } from "react-redux";
-import { AppRootStateType } from "./state/store";
 import {
   AppBar,
   Button,
@@ -23,38 +19,44 @@ import {
 } from "@mui/material";
 import { Menu } from "@mui/icons-material";
 import { Todolist2 } from "./Todolist2";
+import { useAppSelector } from "./custom_hooks/useAppSelector";
+import { useAppDispatch } from "./custom_hooks/useAppDispatch";
 
 export const AppWithRedux2 = () => {
-  const todolists = useSelector<AppRootStateType, Array<TodolistDomainType>>(
+  const todolists = useAppSelector<Array<TodolistDomainType>>(
     (state) => state.todolists
   );
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(todolistsTC.getTodolist());
+  }, []);
 
   const changeFilter = useCallback(
     (newFilterValue: FilterValuesType, todolistId: string) => {
-      dispatch(changeTodolistFilterAC(todolistId, newFilterValue));
+      dispatch(todolistsAC.changeTodolistFilter(todolistId, newFilterValue));
     },
     [dispatch]
   );
 
   const removeTodolist = useCallback(
     (todolistId: string) => {
-      dispatch(removeTodolistAC(todolistId));
+      dispatch(todolistsTC.removeTodolist(todolistId));
     },
     [dispatch]
   );
 
   const changeTodolistTitle = useCallback(
     (todolistId: string, title: string) => {
-      dispatch(changeTodolistTitleAC(todolistId, title));
+      dispatch(todolistsTC.changeTodolistTitle(todolistId, title));
     },
     [dispatch]
   );
 
   const addTodolist = useCallback(
     (title: string) => {
-      dispatch(addTodolistAC(title));
+      dispatch(todolistsTC.addTodolist(title));
     },
     [dispatch]
   );

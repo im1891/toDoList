@@ -1,19 +1,14 @@
-import React, { memo, useCallback } from "react";
+import React, { memo, useCallback, useEffect } from "react";
 import { AddItemForm } from "./AddItemForm";
 import { EditableSpan } from "./EditableSpan";
 import { Button, IconButton } from "@mui/material";
 import { Delete } from "@mui/icons-material";
 import { Task } from "./Task";
-import {
-  addTaskAC,
-  changeTaskStatusAC,
-  changeTaskTitleAC,
-  removeTaskAC,
-} from "./state/tasks-reducer";
-import { useDispatch, useSelector } from "react-redux";
-import { AppRootStateType } from "./state/store";
 import { TaskStatuses, TaskType } from "./api/todolists-api";
 import { FilterValuesType } from "./state/todolists-reducer";
+import { useAppDispatch } from "./custom_hooks/useAppDispatch";
+import { useAppSelector } from "./custom_hooks/useAppSelector";
+import { tasksTC } from "./state/tasks-reducer";
 
 type TodolistPropsType = {
   id: string;
@@ -25,15 +20,20 @@ type TodolistPropsType = {
 };
 
 export const Todolist2 = memo((props: TodolistPropsType) => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
-  const tasks = useSelector<AppRootStateType, TaskType[]>(
-    (state) => state.tasks[props.id]
-  );
+  /* const tasks = useSelector<AppRootStateType, TaskType[]>(
+                       (state) => state.tasks[props.id]
+                     ); */
+  const tasks = useAppSelector<TaskType[]>((state) => state.tasks[props.id]);
+
+  useEffect(() => {
+    dispatch(tasksTC.getTasks(props.id));
+  }, []);
 
   const addTask = useCallback(
     (title: string) => {
-      dispatch(addTaskAC(title, props.id));
+      dispatch(tasksTC.addTask(props.id, title));
     },
     [props.id]
   );
@@ -73,21 +73,21 @@ export const Todolist2 = memo((props: TodolistPropsType) => {
 
   const removeTask = useCallback(
     (taskId: string) => {
-      dispatch(removeTaskAC(taskId, props.id));
+      dispatch(tasksTC.removeTask(props.id, taskId));
     },
     [props.id]
   );
 
   const changeTaskStatus = useCallback(
     (taskId: string, status: TaskStatuses) => {
-      dispatch(changeTaskStatusAC(taskId, status, props.id));
+      dispatch(tasksTC.updateTask(props.id, taskId, { status }));
     },
     [props.id]
   );
 
   const changeTaskTitle = useCallback(
     (taskId: string, newTitle: string) => {
-      dispatch(changeTaskTitleAC(taskId, newTitle, props.id));
+      dispatch(tasksTC.updateTask(props.id, taskId, { title: newTitle }));
     },
     [props.id]
   );
