@@ -1,41 +1,48 @@
 import React, { memo, useCallback, useEffect } from "react";
-import { AddItemForm } from "./AddItemForm";
-import { EditableSpan } from "./EditableSpan";
+import { AddItemForm } from "../../../components/AddItemForm/AddItemForm";
+import { EditableSpan } from "../../../components/EditableSpan/EditableSpan";
 import { Button, IconButton } from "@mui/material";
 import { Delete } from "@mui/icons-material";
-import { Task } from "./Task";
-import { TaskStatuses, TaskType } from "./api/todolists-api";
-import { FilterValuesType } from "./state/todolists-reducer";
-import { useAppDispatch } from "./custom_hooks/useAppDispatch";
-import { useAppSelector } from "./custom_hooks/useAppSelector";
-import { tasksTC } from "./state/tasks-reducer";
+import { Task } from "./Task/Task";
+import { TaskStatuses, TaskType } from "../../../api/todolists-api";
+import { FilterValuesType } from "./todolists-reducer";
+import { getTasksTC } from "./tasks-reducer";
+import { useAppDispatch } from "../../../custom_hooks/useAppDispatch";
 
 type TodolistPropsType = {
   id: string;
   title: string;
+  tasks: Array<TaskType>;
+  removeTask: (taskId: string, todolistId: string) => void;
   changeFilter: (value: FilterValuesType, todolistId: string) => void;
+  addTask: (title: string, todolistId: string) => void;
+  changeTaskStatus: (
+    id: string,
+    status: TaskStatuses,
+    todolistId: string
+  ) => void;
   removeTodolist: (id: string) => void;
   changeTodolistTitle: (id: string, newTitle: string) => void;
   filter: FilterValuesType;
+  changeTaskTitle: (
+    taskId: string,
+    newTitle: string,
+    todolistId: string
+  ) => void;
 };
 
-export const Todolist2 = memo((props: TodolistPropsType) => {
+export const Todolist = memo((props: TodolistPropsType) => {
   const dispatch = useAppDispatch();
 
-  /* const tasks = useSelector<AppRootStateType, TaskType[]>(
-                       (state) => state.tasks[props.id]
-                     ); */
-  const tasks = useAppSelector<TaskType[]>((state) => state.tasks[props.id]);
-
   useEffect(() => {
-    dispatch(tasksTC.getTasks(props.id));
+    dispatch(getTasksTC(props.id));
   }, []);
 
   const addTask = useCallback(
     (title: string) => {
-      dispatch(tasksTC.addTask(props.id, title));
+      props.addTask(title, props.id);
     },
-    [props.id]
+    [props.addTask, props.id]
   );
 
   const removeTodolist = () => {
@@ -58,7 +65,7 @@ export const Todolist2 = memo((props: TodolistPropsType) => {
     [props.changeFilter, props.id]
   );
 
-  let tasksForTodolist = tasks;
+  let tasksForTodolist = props.tasks;
 
   if (props.filter === "active") {
     tasksForTodolist = tasksForTodolist.filter(
@@ -73,23 +80,23 @@ export const Todolist2 = memo((props: TodolistPropsType) => {
 
   const removeTask = useCallback(
     (taskId: string) => {
-      dispatch(tasksTC.removeTask(props.id, taskId));
+      props.removeTask(taskId, props.id);
     },
-    [props.id]
+    [props.removeTask, props.id]
   );
 
   const changeTaskStatus = useCallback(
     (taskId: string, status: TaskStatuses) => {
-      dispatch(tasksTC.updateTask(props.id, taskId, { status }));
+      props.changeTaskStatus(taskId, status, props.id);
     },
-    [props.id]
+    [props.changeTaskStatus, props.id]
   );
 
   const changeTaskTitle = useCallback(
     (taskId: string, newTitle: string) => {
-      dispatch(tasksTC.updateTask(props.id, taskId, { title: newTitle }));
+      props.changeTaskTitle(taskId, newTitle, props.id);
     },
-    [props.id]
+    [props.changeTaskTitle, props.id]
   );
 
   return (
@@ -141,13 +148,6 @@ export const Todolist2 = memo((props: TodolistPropsType) => {
   );
 });
 
-type ButtonExamplePropsType = {
-  variant: "outlined" | "text";
-  onClickHandler: () => void;
-  children: string;
-  color: "secondary" | "primary" | "inherit";
-};
-
 const ButtonExample = memo((props: ButtonExamplePropsType) => {
   return (
     <Button
@@ -159,3 +159,10 @@ const ButtonExample = memo((props: ButtonExamplePropsType) => {
     </Button>
   );
 });
+
+type ButtonExamplePropsType = {
+  variant: "outlined" | "text";
+  onClickHandler: () => void;
+  children: string;
+  color: "secondary" | "primary" | "inherit";
+};

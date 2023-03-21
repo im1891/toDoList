@@ -1,11 +1,15 @@
 import {
+  addTodolistAC,
+  changeTodolistFilterAC,
+  changeTodolistTitleAC,
   FilterValuesType,
+  removeTodolistAC,
+  setTodolistsAC,
   TodolistDomainType,
-  todolistsAC,
   todolistsReducer,
 } from "./todolists-reducer";
 import { v1 } from "uuid";
-import { TodolistType } from "../api/todolists-api";
+import { TodolistType } from "../../../api/todolists-api";
 
 let todolistId1: string;
 let todolistId2: string;
@@ -34,10 +38,7 @@ beforeEach(() => {
 });
 
 test("correct todolist should be removed", () => {
-  const endState = todolistsReducer(
-    startState,
-    todolistsAC.removeTodolist(todolistId1)
-  );
+  const endState = todolistsReducer(startState, removeTodolistAC(todolistId1));
 
   expect(endState.length).toBe(1);
   expect(endState[0].id).toBe(todolistId2);
@@ -51,10 +52,7 @@ test("correct todolist should be added", () => {
     title: "New Todolist",
   };
 
-  const endState = todolistsReducer(
-    startState,
-    todolistsAC.addTodolist(newTodolist)
-  );
+  const endState = todolistsReducer(startState, addTodolistAC(newTodolist));
 
   expect(endState.length).toBe(3);
   expect(endState[0].title).toBe(newTodolist.title);
@@ -64,7 +62,7 @@ test("correct todolist should be added", () => {
 test("correct todolist should change it's name", () => {
   let newTodolistTitle = "New Todolist";
 
-  const action = todolistsAC.changeTodolistTitle(todolistId2, newTodolistTitle);
+  const action = changeTodolistTitleAC(todolistId2, newTodolistTitle);
 
   const endState = todolistsReducer(startState, action);
 
@@ -75,7 +73,7 @@ test("correct todolist should change it's name", () => {
 test("correct filter of todolist should be changed", () => {
   let newFilter: FilterValuesType = "completed";
 
-  const action = todolistsAC.changeTodolistFilter(todolistId2, newFilter);
+  const action = changeTodolistFilterAC(todolistId2, newFilter);
 
   const endState = todolistsReducer(startState, action);
 
@@ -84,7 +82,7 @@ test("correct filter of todolist should be changed", () => {
 });
 
 test("Todolists should be set to the state", () => {
-  let endState = todolistsReducer([], todolistsAC.setTodolists(startState));
+  let endState = todolistsReducer([], setTodolistsAC(startState));
 
   expect(endState.length).toBe(2);
 });

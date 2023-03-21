@@ -1,5 +1,5 @@
-import { tasksReducer } from "./tasks-reducer";
-import { todolistsReducer } from "./todolists-reducer";
+import { tasksReducer } from "../features/TodolistList/Todolist/tasks-reducer";
+import { todolistsReducer } from "../features/TodolistList/Todolist/todolists-reducer";
 import {
   applyMiddleware,
   combineReducers,
