@@ -22,14 +22,14 @@ const Template: ComponentStory<typeof AddItemForm> = (args) => (
 
 const TemplateWithError: ComponentStory<typeof AddItemForm> = (args) => {
   let [title, setTitle] = useState("");
-  let [error, setError] = useState<string | null>("Title is required");
+  let [error, setAppError] = useState<string | null>("Title is required");
 
   const addItem = () => {
     if (title.trim() !== "") {
       args.addItem(title);
       setTitle("");
     } else {
-      setError("Title is required");
+      setAppError("Title is required");
     }
   };
 
@@ -38,7 +38,7 @@ const TemplateWithError: ComponentStory<typeof AddItemForm> = (args) => {
   };
 
   const onKeyPressHandler = (e: KeyboardEvent<HTMLInputElement>) => {
-    error && setError(null);
+    error && setAppError(null);
     if (e.charCode === 13) {
       addItem();
     }
@@ -72,4 +72,10 @@ export const AddItemFormStoryWithError = TemplateWithError.bind({});
 
 AddItemFormStoryWithError.args = {
   addItem: action("Button 'add' was pressed inside the form"),
+};
+
+export const AddItemFormDisabled = Template.bind({});
+
+AddItemFormDisabled.args = {
+  disabled: true,
 };

@@ -11,7 +11,9 @@ const axiosInstance = axios.create({
 //API
 export const todolistsAPI = {
   getTodolists() {
-    return axiosInstance.get<TodolistType[]>("todo-lists");
+    return axiosInstance
+      .get<TodolistType[]>("todo-lists")
+      .then((res) => res.data);
   },
 
   createTodolist(todolistTitle: string) {
@@ -64,7 +66,30 @@ export const todolistsAPI = {
   },
 };
 
+export const authAPI = {
+  login(data: LoginDataType) {
+    return axiosInstance.post<ResponseType<{ userId?: number }>>(
+      "auth/login",
+      data
+    );
+  },
+  logout() {
+    return axiosInstance.delete<ResponseType>("auth/login");
+  },
+  me() {
+    return axiosInstance.get<
+      ResponseType<{ id: number; email: string; login: string }>
+    >("auth/me");
+  },
+};
 //Types
+export type LoginDataType = {
+  email: string;
+  password: string;
+  rememberMe: boolean;
+  captcha?: string;
+};
+
 export type TodolistType = {
   id: string;
   title: string;
@@ -72,7 +97,7 @@ export type TodolistType = {
   order: number;
 };
 
-type ResponseType<T = {}> = {
+export type ResponseType<T = {}> = {
   resultCode: number;
   messages: string[];
   data: T;
@@ -91,6 +116,12 @@ export enum TaskPriorities {
   Hi = 2,
   Urgently = 3,
   Later = 4,
+}
+
+export enum ResultStatus {
+  OK = 0,
+  Error = 1,
+  CAPTCHA,
 }
 
 export type TaskType = {

@@ -21,8 +21,17 @@ import {
   updateTaskTC,
 } from "./Todolist/tasks-reducer";
 import { TaskStatuses } from "../../api/todolists-api";
+import { useAppSelector } from "../../custom_hooks/useAppSelector";
+import { Navigate } from "react-router-dom";
 
-export const TodolistsList = () => {
+type TodolistListsPropsType = {
+  demo?: boolean;
+};
+
+export const TodolistsList: React.FC<TodolistListsPropsType> = ({
+  demo = false,
+  ...props
+}) => {
   const todolists = useSelector<AppRootStateType, Array<TodolistDomainType>>(
     (state) => state.todolists
   );
@@ -34,6 +43,9 @@ export const TodolistsList = () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
+    if (demo || !isLoggedIn) {
+      return;
+    }
     dispatch(getTodolistTC());
   }, []);
 
@@ -92,29 +104,31 @@ export const TodolistsList = () => {
     },
     [dispatch]
   );
+  const isLoggedIn = useAppSelector((state) => state.authData.isLoggedIn);
 
+  if (!isLoggedIn) return <Navigate replace to={"/login"} />;
   return (
     <>
       <Grid container style={{ padding: "20px" }}>
         <AddItemForm addItem={addTodolist} />
       </Grid>
       <Grid container spacing={3}>
-        {todolists.map((tl) => {
+        {todolists.map((tl, i) => {
           return (
             <Grid item key={tl.id}>
               <Paper style={{ padding: "10px" }}>
                 <Todolist
-                  id={tl.id}
-                  title={tl.title}
+                  key={i}
+                  todolist={tl}
                   tasks={tasks[tl.id]}
                   removeTask={removeTask}
                   changeFilter={changeFilter}
                   addTask={addTask}
                   changeTaskStatus={changeStatus}
-                  filter={tl.filter}
                   removeTodolist={removeTodolist}
                   changeTaskTitle={changeTaskTitle}
                   changeTodolistTitle={changeTodolistTitle}
+                  demo={demo}
                 />
               </Paper>
             </Grid>

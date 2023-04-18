@@ -29,6 +29,7 @@ beforeEach(() => {
         order: 0,
         description: "",
         todoListId: "todolistId1",
+        entityStatus: "idle",
       },
       {
         id: "2",
@@ -41,6 +42,7 @@ beforeEach(() => {
         order: 0,
         description: "",
         todoListId: "todolistId1",
+        entityStatus: "idle",
       },
       {
         id: "3",
@@ -53,6 +55,7 @@ beforeEach(() => {
         order: 0,
         description: "",
         todoListId: "todolistId1",
+        entityStatus: "idle",
       },
     ],
     todolistId2: [
@@ -67,6 +70,7 @@ beforeEach(() => {
         order: 0,
         description: "",
         todoListId: "todolistId2",
+        entityStatus: "idle",
       },
       {
         id: "2",
@@ -79,6 +83,7 @@ beforeEach(() => {
         order: 0,
         description: "",
         todoListId: "todolistId2",
+        entityStatus: "idle",
       },
       {
         id: "3",
@@ -91,6 +96,7 @@ beforeEach(() => {
         order: 0,
         description: "",
         todoListId: "todolistId2",
+        entityStatus: "idle",
       },
     ],
   };

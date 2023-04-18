@@ -24,6 +24,7 @@ export default {
       order: 0,
       deadline: "",
       addedDate: "",
+      entityStatus: "idle",
     },
   },
   decorators: [ReduxStoreProviderDecorator],
@@ -47,5 +48,6 @@ TaskIsNotDoneStory.args = {
     order: 0,
     deadline: "",
     addedDate: "",
+    entityStatus: "idle",
   },
 };

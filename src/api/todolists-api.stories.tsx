@@ -10,7 +10,7 @@ export const GetTodolists = () => {
 
   useEffect(() => {
     todolistsAPI.getTodolists().then((response) => {
-      setState(response.data);
+      setState(response);
     });
   }, []);
 
@@ -103,6 +103,7 @@ export const GetTasks = () => {
   const [todolistId, setTodolistId] = useState<string>("");
 
   const getTasks = (todolistId: string) => {
+    debugger;
     todolistsAPI.getTasks(todolistId).then((response) => {
       setState(response.data.items);
       setTodolistId("");
@@ -198,7 +199,7 @@ export const UpdateTask = () => {
   const [todolistId, setTodolistId] = useState<string>("");
   const [taskId, setTaskId] = useState<string>("");
   const [description, setDescription] = useState<string>("");
-  const [status, setStatus] = useState<number>(0);
+  const [status, setAppStatus] = useState<number>(0);
   const [priority, setPriority] = useState<number>(0);
   const [startDate, setStartDate] = useState<string>("");
   const [deadline, setDeadline] = useState<string>("");
@@ -231,7 +232,7 @@ export const UpdateTask = () => {
 
     setStartDate("");
     setPriority(0);
-    setStatus(0);
+    setAppStatus(0);
     setTaskId("");
     setDescription("");
     setTodolistId("");
@@ -271,7 +272,7 @@ export const UpdateTask = () => {
         <input
           type="text"
           placeholder="Enter status"
-          onChange={(e) => setStatus(+e.currentTarget.value)}
+          onChange={(e) => setAppStatus(+e.currentTarget.value)}
           value={status}
         />
       </div>
