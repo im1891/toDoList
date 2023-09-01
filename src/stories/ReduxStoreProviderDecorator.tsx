@@ -106,7 +106,7 @@ const initialGlobalState: AppRootStateType = {
 const storyBookStore = createStore(
 	rootReducer, initialGlobalState as AppRootStateType, composeWithDevTools(applyMiddleware(thunk))
 )
-export const ReduxStoreProviderDecorator = (Story: () => ReactNode) => {
+export const ReduxStoreProviderDecorator = (Story: () => JSX.Element) => {
 	return (
 
 		<MemoryRouter>
