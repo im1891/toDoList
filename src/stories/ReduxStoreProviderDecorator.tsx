@@ -9,7 +9,6 @@ import { appReducer, RequestStatusType } from '../App/app-reducer'
 import thunk from 'redux-thunk'
 import { composeWithDevTools } from 'redux-devtools-extension'
 import { authReducer } from '../features/Login/auth-reducer'
-import { ReactNode } from 'react'
 import { MemoryRouter } from 'react-router-dom'
 
 const rootReducer = combineReducers({
