@@ -1,96 +1,58 @@
-import { ThunkAction } from "redux-thunk";
-import { AppRootStateType } from "../../app/store";
-import { authAPI, LoginDataType, ResultStatus } from "../../api/todolists-api";
-import { setAppStatus, SetAppStatusType } from "../../app/app-reducer";
-import {
-  handleServerAppError,
-  handleServerNetworkError,
-} from "../../utils/error-utils";
-import { AxiosError } from "axios";
-import {
-  clearTodosDataAC,
-  clearTodosDataACType,
-} from "../TodolistList/Todolist/todolists-reducer";
+import { AppReducersThunkType } from '../../App/store'
+import { RequestStatusType, setAppStatusAC } from '../../App/app-reducer'
+import { authApi, AxiosErrorType, LoginParams, ResultCodes } from '../../todolists-api'
+import { handleServerAppError, handleServerNetworkError } from '../../utils/error-utils'
 
-const initialState: LoginStateType = {
-  isLoggedIn: false,
-};
+const initialState = {
+	isLoggedIn: false
+}
+export const authReducer = (state: LoginReducerStateType = initialState, action: LoginReducerActionsType): LoginReducerStateType => {
+	switch (action.type) {
+		case 'AUTH/SET-IS-LOGGED-IN':
+			return { ...state, isLoggedIn: action.value }
+		default:
+			return state
+	}
+}
 
-export const authReducer = (
-  state = initialState,
-  action: authReducerActionsType
-) => {
-  switch (action.type) {
-    case "login/SET-IS-LOGGED-IN":
-      return { ...state, isLoggedIn: action.value };
-    default:
-      return state;
-  }
-};
+// types
 
-//Actions
-export const setIsLoggedInAC = (value: boolean) =>
-  ({
-    type: "login/SET-IS-LOGGED-IN",
-    value,
-  } as const);
+type LoginReducerStateType = typeof initialState
+export type LoginReducerActionsType = ReturnType<typeof setIsLoggedIn>
 
-//Thunks
-export const loginTC =
-  (data: LoginDataType): AuthReducerThunkType =>
-  (dispatch) => {
-    dispatch(setAppStatus("loading"));
-    authAPI
-      .login(data)
-      .then((res) => {
-        if (res.data.resultCode === 0) {
-          dispatch(setIsLoggedInAC(true));
-          dispatch(setAppStatus("succeeded"));
-        } else {
-          handleServerAppError(res.data, dispatch);
-        }
-      })
-      .catch((e: AxiosError<{ message: string }>) => {
-        const error = e.response?.data ? e.response.data.message : e.message;
-        handleServerNetworkError(error, dispatch);
-      });
-  };
+// actions
+export const setIsLoggedIn = (value: boolean) => ({ type: 'AUTH/SET-IS-LOGGED-IN', value } as const)
+// thunks
 
-export const logoutTC = (): AuthReducerThunkType => (dispatch) => {
-  dispatch(setAppStatus("loading"));
+export const loginTC = (logData: LoginParams): AppReducersThunkType =>
+	async (dispatch) => {
+		dispatch(setAppStatusAC(RequestStatusType.LOADING))
+		try {
+			const data = await authApi.login(logData)
 
-  authAPI
-    .logout()
-    .then((res) => {
-      if (res.data.resultCode === ResultStatus.OK) {
-        dispatch(setIsLoggedInAC(false));
-        dispatch(setAppStatus("succeeded"));
-        dispatch(clearTodosDataAC());
-      } else {
-        handleServerAppError(res.data, dispatch);
-      }
-    })
-    .catch((e: AxiosError<{ message: string }>) => {
-      const error = e.response?.data ? e.response.data.message : e.message;
-      handleServerNetworkError(error, dispatch);
-    });
-};
+			if (data.resultCode === ResultCodes.OK) {
+				dispatch(setAppStatusAC(RequestStatusType.SUCCEEDED))
+				dispatch(setIsLoggedIn(true))
+				return true
+			} else {
+				handleServerAppError(data, dispatch)
+				return false
+			}
+		} catch (e) {
+			const error = e as AxiosErrorType
+			handleServerNetworkError(error, dispatch)
+			return false
+		}
+	}
 
-//types
-type LoginStateType = {
-  isLoggedIn: boolean;
-};
-
-export type SetIsLoggedInACType = ReturnType<typeof setIsLoggedInAC>;
-
-type authReducerActionsType =
-  | SetAppStatusType
-  | SetIsLoggedInACType
-  | clearTodosDataACType;
-
-type AuthReducerThunkType = ThunkAction<
-  void,
-  AppRootStateType,
-  any,
-  authReducerActionsType
->;
+export const logoutTC = (): AppReducersThunkType => (dispatch) => {
+	dispatch(setAppStatusAC(RequestStatusType.LOADING))
+	authApi.logout()
+		.then(data => {
+			if (data.resultCode === ResultCodes.OK) {
+				dispatch(setIsLoggedIn(false))
+				dispatch(setAppStatusAC(RequestStatusType.SUCCEEDED))
+			} else handleServerAppError(data, dispatch)
+		})
+		.catch((e: AxiosErrorType) => handleServerNetworkError(e, dispatch))
+}

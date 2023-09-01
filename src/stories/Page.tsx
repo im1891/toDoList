@@ -7,7 +7,7 @@ type User = {
   name: string;
 };
 
-export const Page: React.VFC = () => {
+export const Page: React.FC = () => {
   const [user, setUser] = React.useState<User>();
 
   return (
@@ -19,7 +19,7 @@ export const Page: React.VFC = () => {
         onCreateAccount={() => setUser({ name: 'Jane Doe' })}
       />
 
-      <section>
+      <section className="storybook-page">
         <h2>Pages in Storybook</h2>
         <p>
           We recommend building UIs with a{' '}
@@ -45,7 +45,7 @@ export const Page: React.VFC = () => {
         </ul>
         <p>
           Get a guided tutorial on component-driven development at{' '}
-          <a href="https://storybook.js.org/tutorials/" target="_blank" rel="noopener noreferrer">
+          <a href="renderers/react/template/cli/ts/Page" target="_blank" rel="noopener noreferrer">
             Storybook tutorials
           </a>
           . Read more in the{' '}
