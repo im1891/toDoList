@@ -26,56 +26,59 @@ export type TodolistPropsType = {
 	demo?: boolean
 }
 
-export const Todolist: React.FC<TodolistPropsType> = React.memo(({ demo = false, ...props }) => {
+export const Todolist: React.FC<TodolistPropsType> = React.memo((props) => {
+	const { todolist, changeTaskStatus, changeTaskTitle, removeTask } = props
+
 	const {
-		removeTodolist,
-		changeTodolistTitle,
-		onAllClickHandler,
-		addTask,
 		tasksForTodolist,
-		onCompletedClickHandler,
-		onActiveClickHandler
-	} = useTodolist(props, demo)
+		changeTodolistTitleHandler,
+		removeTodolistHandler,
+		addTaskHandler,
+		onAllClickHandlerHandler,
+		onActiveClickHandlerHandler,
+		onCompletedClickHandlerHandler
+	} = useTodolist(props)
 
 	return (
 		<div>
 			<h3>
-				<EditableSpan value={props.todolist.title} onChange={changeTodolistTitle} />
-				<IconButton onClick={removeTodolist} disabled={props.todolist.entityStatus === RequestStatusType.LOADING}>
+				<EditableSpan value={todolist.title} onChange={changeTodolistTitleHandler} />
+				<IconButton onClick={removeTodolistHandler}
+										disabled={todolist.entityStatus === RequestStatusType.LOADING}>
 					<Delete />
 				</IconButton>
 			</h3>
-			<AddItemForm addItem={addTask} disabled={props.todolist.entityStatus === RequestStatusType.LOADING} />
+			<AddItemForm addItem={addTaskHandler} disabled={todolist.entityStatus === RequestStatusType.LOADING} />
 			<div>
 				{tasksForTodolist.map((t) => (
 					<Task
 						key={t.id}
 						task={t}
-						changeTaskStatus={props.changeTaskStatus}
-						changeTaskTitle={props.changeTaskTitle}
-						removeTask={props.removeTask}
-						todolistId={props.todolist.id}
+						changeTaskStatus={changeTaskStatus}
+						changeTaskTitle={changeTaskTitle}
+						removeTask={removeTask}
+						todolistId={todolist.id}
 					/>
 				))}
 			</div>
 			<div style={{ paddingTop: '10px' }}>
 				<Button
 					variant={props.todolist.filter === 'all' ? 'outlined' : 'text'}
-					onClick={onAllClickHandler}
+					onClick={onAllClickHandlerHandler}
 					color={'primary'}
 				>
 					All
 				</Button>
 				<Button
 					variant={props.todolist.filter === 'active' ? 'outlined' : 'text'}
-					onClick={onActiveClickHandler}
+					onClick={onActiveClickHandlerHandler}
 					color={'success'}
 				>
 					Active
 				</Button>
 				<Button
 					variant={props.todolist.filter === 'completed' ? 'outlined' : 'text'}
-					onClick={onCompletedClickHandler}
+					onClick={onCompletedClickHandlerHandler}
 					color={'secondary'}
 				>
 					Completed

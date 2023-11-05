@@ -2,6 +2,7 @@ import {
 	AddTodolistActionType,
 	ClearTodolistDataActionType,
 	RemoveTodolistActionType,
+	setTodolistEntityStatusAC,
 	SetTodolistsActionType
 } from './todolists-reducer'
 import {
@@ -13,7 +14,7 @@ import {
 	TaskUpdateType,
 	todolistsAPI
 } from '../../todolists-api'
-import { AppReducersThunkType, AppRootStateType } from '../../App/store'
+import { AppRootStateType, AppThunkType } from '../../App/store'
 import { RequestStatusType, SetAppErrorActionType, setAppStatusAC, SetAppStatusActionType } from '../../App/app-reducer'
 import { handleServerAppError, handleServerNetworkError } from '../../utils/error-utils'
 
@@ -102,8 +103,10 @@ export const updateTaskAC = (todolistId: string, taskId: string,
 		type: 'TASKS/UPDATE-TASK', payload: { todolistId, taskId, taskUpdateModel }
 	} as const)
 
+export const toggleDeletingInProgress = (status: boolean, taskId: number) =>
+	({ type: 'TASKS/TOGGLE-DELETING-PROGRESS', payload: { status, taskId } } as const)
 ///// thunks
-export const fetchTasksTC = (todolistId: string): AppReducersThunkType =>
+export const fetchTasksTC = (todolistId: string): AppThunkType =>
 	(dispatch) => {
 		dispatch(setAppStatusAC(RequestStatusType.LOADING))
 		todolistsAPI
@@ -116,8 +119,9 @@ export const fetchTasksTC = (todolistId: string): AppReducersThunkType =>
 	}
 
 export const deleteTaskTC =
-	(todolistId: string, taskId: string): AppReducersThunkType =>
+	(todolistId: string, taskId: string): AppThunkType =>
 		(dispatch) => {
+			dispatch(setTodolistEntityStatusAC(RequestStatusType.LOADING, todolistId))
 			todolistsAPI
 				.deleteTask(todolistId, taskId)
 				.then((data) => {
@@ -126,10 +130,11 @@ export const deleteTaskTC =
 					} else handleServerAppError(data, dispatch)
 				})
 				.catch((e: AxiosErrorType) => handleServerNetworkError(e, dispatch))
+				.finally(() => dispatch(setTodolistEntityStatusAC(RequestStatusType.SUCCEEDED, todolistId)))
 		}
 
 export const addTaskTC =
-	(todolistId: string, title: string): AppReducersThunkType =>
+	(todolistId: string, title: string): AppThunkType =>
 		(dispatch) => {
 			dispatch(setAppStatusAC(RequestStatusType.LOADING))
 			todolistsAPI
@@ -148,7 +153,7 @@ export const updateTaskTC =
 		todolistId: string,
 		taskId: string,
 		taskUpdateModel: TaskUpdateModelType
-	): AppReducersThunkType =>
+	): AppThunkType =>
 		(dispatch, getState: () => AppRootStateType) => {
 			const task = getState().tasks[todolistId].find((ts) => ts.id === taskId)
 
@@ -193,9 +198,11 @@ export type TasksReducerActionTypes =
 	| ReturnType<typeof setTasksAC>
 	| ReturnType<typeof updateTaskAC>
 	| ReturnType<typeof removeTaskAC>
+	| ReturnType<typeof toggleDeletingInProgress>
 	| SetAppErrorActionType
 	| SetAppStatusActionType
 	| ClearTodolistDataActionType
+
 type TaskUpdateModelType = {
 	title?: string
 	description?: string

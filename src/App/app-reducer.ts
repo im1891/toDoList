@@ -1,4 +1,4 @@
-import { AppReducersThunkType } from './store'
+import { AppThunkType } from './store'
 import { authApi, AxiosErrorType, ResultCodes } from '../todolists-api'
 import { handleServerAppError, handleServerNetworkError } from '../utils/error-utils'
 import { setIsLoggedIn } from '../features/Login/auth-reducer'
@@ -36,7 +36,7 @@ export const setAppInitializeAC = (value: boolean) =>
 	({ type: 'APP/SET-IS-INITIALIZE', value } as const)
 
 // thunks
-export const initializeAppTC = (): AppReducersThunkType => (dispatch) => {
+export const initializeAppTC = (): AppThunkType => (dispatch) => {
 	authApi.me()
 		.then(data => {
 			if (data.resultCode === ResultCodes.OK) {

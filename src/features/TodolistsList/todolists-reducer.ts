@@ -1,5 +1,5 @@
 import { AxiosErrorType, ResultCodes, todolistsAPI, TodolistType } from '../../todolists-api'
-import { AppReducersThunkType } from '../../App/store'
+import { AppThunkType } from '../../App/store'
 import { RequestStatusType, setAppStatusAC, SetAppStatusActionType } from '../../App/app-reducer'
 import { handleServerAppError, handleServerNetworkError } from '../../utils/error-utils'
 import { fetchTasksTC } from './tasks-reducer'
@@ -69,7 +69,7 @@ export const setTodolistEntityStatusAC = (status: RequestStatusType, id: string)
 export const clearTodolistDataAC = () => ({ type: 'TODOLIST/CLEAR-TODOLIST-DATA' } as const)
 
 // thunks
-export const fetchTodolistsTC = (): AppReducersThunkType => (dispatch) => {
+export const fetchTodolistsTC = (): AppThunkType => (dispatch) => {
 	dispatch(setAppStatusAC(RequestStatusType.LOADING))
 	todolistsAPI
 		.getTodolists()
@@ -86,7 +86,7 @@ export const fetchTodolistsTC = (): AppReducersThunkType => (dispatch) => {
 }
 
 export const deleteTodolistTC =
-	(id: string): AppReducersThunkType =>
+	(id: string): AppThunkType =>
 		async (dispatch) => {
 			try {
 				dispatch(setAppStatusAC(RequestStatusType.LOADING))
@@ -104,7 +104,7 @@ export const deleteTodolistTC =
 		}
 
 export const addTodolistTC =
-	(title: string): AppReducersThunkType =>
+	(title: string): AppThunkType =>
 		(dispatch) => {
 			dispatch(setAppStatusAC(RequestStatusType.LOADING))
 			todolistsAPI
@@ -120,7 +120,7 @@ export const addTodolistTC =
 		}
 
 export const changeTodolistTitleTC =
-	(id: string, title: string): AppReducersThunkType =>
+	(id: string, title: string): AppThunkType =>
 		(dispatch) => {
 			dispatch(setAppStatusAC(RequestStatusType.LOADING))
 			todolistsAPI

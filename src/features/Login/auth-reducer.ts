@@ -1,4 +1,4 @@
-import { AppReducersThunkType } from '../../App/store'
+import { AppThunkType } from '../../App/store'
 import { RequestStatusType, setAppStatusAC } from '../../App/app-reducer'
 import { authApi, AxiosErrorType, LoginParams, ResultCodes } from '../../todolists-api'
 import { handleServerAppError, handleServerNetworkError } from '../../utils/error-utils'
@@ -15,16 +15,11 @@ export const authReducer = (state: LoginReducerStateType = initialState, action:
 	}
 }
 
-// types
-
-type LoginReducerStateType = typeof initialState
-export type LoginReducerActionsType = ReturnType<typeof setIsLoggedIn>
-
 // actions
 export const setIsLoggedIn = (value: boolean) => ({ type: 'AUTH/SET-IS-LOGGED-IN', value } as const)
-// thunks
 
-export const loginTC = (logData: LoginParams): AppReducersThunkType =>
+// thunks
+export const loginTC = (logData: LoginParams): AppThunkType =>
 	async (dispatch) => {
 		dispatch(setAppStatusAC(RequestStatusType.LOADING))
 		try {
@@ -45,7 +40,7 @@ export const loginTC = (logData: LoginParams): AppReducersThunkType =>
 		}
 	}
 
-export const logoutTC = (): AppReducersThunkType => (dispatch) => {
+export const logoutTC = (): AppThunkType => (dispatch) => {
 	dispatch(setAppStatusAC(RequestStatusType.LOADING))
 	authApi.logout()
 		.then(data => {
@@ -56,3 +51,7 @@ export const logoutTC = (): AppReducersThunkType => (dispatch) => {
 		})
 		.catch((e: AxiosErrorType) => handleServerNetworkError(e, dispatch))
 }
+
+// types
+type LoginReducerStateType = typeof initialState
+export type LoginReducerActionsType = ReturnType<typeof setIsLoggedIn>

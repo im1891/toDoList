@@ -49,7 +49,6 @@ const App: React.FC<AppPropsType> = ({ demo = false }) => {
 	return (
 		<div className='App'>
 			<AppBar position='static'>
-
 				<Toolbar>
 					{/*<IconButton edge='start' color='inherit' aria-label='menu'>
 						<Menu />
@@ -70,11 +69,10 @@ const App: React.FC<AppPropsType> = ({ demo = false }) => {
 				<Routes>
 					<Route path={'/404'} element={isLoggedIn ? <h1 style={{ textAlign: 'center' }}>404: PAGE NOT FOUND</h1> :
 						<Navigate replace to={'/login'} />} />
-					<Route path={'*'} element={<Navigate to={'/404'} />} />
+					<Route path={'*'} element={<Navigate replace to={'/404'} />} />
 					<Route path={'/'} element={<TodolistsList demo={demo} />} />
 					<Route path={'/login'} element={<Login />} />
 				</Routes>
-
 			</Container>
 			<ErrorSnackbar />
 		</div>

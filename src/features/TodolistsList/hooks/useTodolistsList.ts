@@ -25,43 +25,42 @@ export const useTodolistsList = (demo: boolean = false) => {
 	}, [])
 
 	const removeTask = useCallback(
-		function(taskId: string, todolistId: string) {
+		(taskId: string, todolistId: string) => {
 			dispatch(deleteTaskTC(todolistId, taskId))
 		},
 		[dispatch]
 	)
 
 	const addTask = useCallback(
-		function(title: string, todolistId: string) {
+		(title: string, todolistId: string) => {
 			dispatch(addTaskTC(todolistId, title))
 		},
 		[dispatch]
 	)
 
 	const changeTaskStatus = useCallback(
-		function(taskId: string, status: TaskStatuses, todolistId: string) {
+		(taskId: string, status: TaskStatuses, todolistId: string) => {
 			dispatch(updateTaskTC(todolistId, taskId, { status }))
 		},
 		[dispatch]
 	)
 
 	const changeTaskTitle = useCallback(
-		function(taskId: string, title: string, todolistId: string) {
+		(taskId: string, title: string, todolistId: string) => {
 			dispatch(updateTaskTC(todolistId, taskId, { title }))
 		},
 		[dispatch]
 	)
 
 	const changeFilter = useCallback(
-		function(value: FilterValuesType, todolistId: string) {
-			const action = changeTodolistFilterAC(todolistId, value)
-			dispatch(action)
+		(value: FilterValuesType, todolistId: string) => {
+			dispatch(changeTodolistFilterAC(todolistId, value))
 		},
 		[dispatch]
 	)
 
 	const removeTodolist = useCallback(
-		function(todolistId: string) {
+		(todolistId: string) => {
 			dispatch(deleteTodolistTC(todolistId))
 		},
 		[dispatch]

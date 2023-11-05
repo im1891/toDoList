@@ -1,40 +1,45 @@
 import React, { ChangeEvent, useState } from 'react'
 import { TextField } from '@mui/material'
+import { TaskStatuses } from '../../todolists-api'
 
+export const EditableSpan: React.FC<EditableSpanPropsType> = React.memo(({ value, onChange, status }) => {
+	let [editMode, setEditMode] = useState(false)
+	let [newValue, setNewValue] = useState(value)
+
+	const toggleEditMode = () => {
+		if (status === TaskStatuses.Completed) return
+
+		if (editMode) {
+			if (newValue.trim() !== value && newValue.trim().length) {
+				onChange(newValue.trim())
+			} else {
+				setNewValue(value)
+			}
+		}
+
+		setEditMode(prevState => !prevState)
+	}
+	const changeTitle = (e: ChangeEvent<HTMLInputElement>) => {
+		setNewValue(e.currentTarget.value)
+	}
+	const onEnterHandler = (e: React.KeyboardEvent<HTMLDivElement>) => {
+		e.key === 'Enter' && toggleEditMode()
+	}
+
+	if (editMode) return <TextField
+		autoFocus
+		value={newValue}
+		onChange={changeTitle}
+		onBlur={toggleEditMode}
+		onKeyDown={onEnterHandler}
+	/>
+	return <span style={{ textDecoration: status === TaskStatuses.Completed ? 'line-through' : 'none' }}
+							 onDoubleClick={toggleEditMode}>{value}</span>
+})
+
+// types
 type EditableSpanPropsType = {
 	value: string
 	onChange: (newValue: string) => void
-	disabled?: boolean
+	status?: TaskStatuses
 }
-
-export const EditableSpan: React.FC<EditableSpanPropsType> = React.memo((props ) => {
-	let [editMode, setEditMode] = useState(false)
-	let [title, setTitle] = useState(props.value)
-
-	const activateEditMode = () => {
-		setEditMode(true)
-		setTitle(props.value)
-	}
-	const activateViewMode = () => {
-		setEditMode(false)
-		props.onChange(title)
-	}
-	const changeTitle = (e: ChangeEvent<HTMLInputElement>) => {
-		setTitle(e.currentTarget.value)
-	}
-
-	const onEnterHandler = (e: React.KeyboardEvent<HTMLDivElement>) => {
-		e.key === 'Enter' && activateViewMode()
-	}
-	return editMode ? (
-		<TextField
-			value={title}
-			onChange={changeTitle}
-			autoFocus
-			onBlur={activateViewMode}
-			onKeyDown={onEnterHandler}
-		/>
-	) : (
-		<span onDoubleClick={activateEditMode}>{props.value}</span>
-	)
-})

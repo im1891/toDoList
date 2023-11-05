@@ -2,56 +2,63 @@ import { useCallback } from 'react'
 import { TaskStatuses } from '../../../../todolists-api'
 import { TodolistPropsType } from '../Todolist'
 
-export const useTodolist = (props: TodolistPropsType, demo: boolean) => {
+export const useTodolist = ({
+															todolist,
+															removeTodolist,
+															changeTodolistTitle,
+															tasks,
+															addTask,
+															changeFilter
+														}: TodolistPropsType) => {
 
-	const addTask = useCallback(
+	const addTaskHandler = useCallback(
 		(title: string) => {
-			props.addTask(title, props.todolist.id)
+			addTask(title, todolist.id)
 		},
-		[props.addTask, props.todolist.id]
+		[addTask, todolist.id]
 	)
 
-	const removeTodolist = () => {
-		props.removeTodolist(props.todolist.id)
+	const removeTodolistHandler = () => {
+		removeTodolist(todolist.id)
 	}
-	const changeTodolistTitle = useCallback(
+	const changeTodolistTitleHandler = useCallback(
 		(title: string) => {
-			props.changeTodolistTitle(props.todolist.id, title)
+			changeTodolistTitle(todolist.id, title)
 		},
-		[props.todolist.id, props.changeTodolistTitle]
+		[todolist.id, changeTodolistTitle]
 	)
 
-	const onAllClickHandler = useCallback(
-		() => props.changeFilter('all', props.todolist.id),
-		[props.changeFilter, props.todolist.id]
+	const onAllClickHandlerHandler = useCallback(
+		() => changeFilter('all', todolist.id),
+		[changeFilter, todolist.id]
 	)
-	const onActiveClickHandler = useCallback(
-		() => props.changeFilter('active', props.todolist.id),
-		[props.changeFilter, props.todolist.id]
+	const onActiveClickHandlerHandler = useCallback(
+		() => changeFilter('active', todolist.id),
+		[changeFilter, todolist.id]
 	)
-	const onCompletedClickHandler = useCallback(
-		() => props.changeFilter('completed', props.todolist.id),
-		[props.changeFilter, props.todolist.id]
+	const onCompletedClickHandlerHandler = useCallback(
+		() => changeFilter('completed', todolist.id),
+		[changeFilter, todolist.id]
 	)
 
-	let tasksForTodolist = props.tasks
+	let tasksForTodolist = tasks
 
-	if (props.todolist.filter === 'active') {
-		tasksForTodolist = props.tasks.filter((t) => t.status === TaskStatuses.New)
+	if (todolist.filter === 'active') {
+		tasksForTodolist = tasks.filter((ts) => ts.status === TaskStatuses.New)
 	}
-	if (props.todolist.filter === 'completed') {
-		tasksForTodolist = props.tasks.filter(
-			(t) => t.status === TaskStatuses.Completed
+	if (todolist.filter === 'completed') {
+		tasksForTodolist = tasks.filter(
+			(ts) => ts.status === TaskStatuses.Completed
 		)
 	}
 
 	return {
-		addTask,
-		removeTodolist,
-		changeTodolistTitle,
-		onAllClickHandler,
-		onActiveClickHandler,
-		onCompletedClickHandler,
-		tasksForTodolist
+		tasksForTodolist,
+		addTaskHandler,
+		removeTodolistHandler,
+		changeTodolistTitleHandler,
+		onAllClickHandlerHandler,
+		onActiveClickHandlerHandler,
+		onCompletedClickHandlerHandler
 	}
 }
